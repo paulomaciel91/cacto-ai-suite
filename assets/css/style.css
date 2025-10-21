@@ -1,0 +1,214 @@
+/*
+  Cacto AI Suite — Estilos principais
+  Tema escuro, profissional e limpo (HTML5 + CSS3 puros)
+  Comentários incluídos para facilitar manutenção.
+*/
+
+/* -----------------------------
+   Variáveis de tema
+------------------------------ */
+:root {
+  /* Paleta alinhada ao Chat Monitor */
+  --bg: #0f172a;            /* Fundo principal */
+  --surface: #111827;       /* Painéis/cards */
+  --text: #e5e7eb;          /* Texto principal */
+  --muted: #9ca3af;         /* Texto secundário */
+
+  /* Ações (azul do Chat Monitor) */
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --brown: #5C3A00;         /* Botões “Em breve” (mantido) */
+  --brown-text: #FFFFFF;
+
+  /* Efeitos */
+  --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --radius: 14px;
+  --radius-btn: 10px;
+  --maxw: 1180px;
+}
+
+/* Reset básico e tipografia */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', 'Poppins', sans-serif;
+  background: radial-gradient(1200px 600px at 10% -10%, #0b1024 0, transparent 60%),
+              radial-gradient(1200px 800px at 110% 0%, #052a4a 0, transparent 50%),
+              var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+/* -----------------------------
+   Cabeçalho e títulos
+------------------------------ */
+.site-header {
+  padding: 48px 0 24px;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-weight: 700;
+  font-size: clamp(28px, 4vw, 40px);
+  letter-spacing: 0.2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(14px, 2.2vw, 18px);
+}
+
+/* Exibe o logo da raiz antes do título na página inicial */
+/* Logo removido: manter apenas emoji + nome no título */
+/* .title::before { content: none; } */
+
+.section-lead {
+  margin: 24px 0 18px;
+  color: var(--muted);
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+/* -----------------------------
+   Grid de cards responsivo
+------------------------------ */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  align-items: stretch;
+}
+
+/* Desktop: reposiciona Cacto Test Lab para o topo (3º card) */
+@media (min-width: 1025px) {
+  /* 6º item (Cacto Test Lab) vai para 1ª linha, 3ª coluna */
+  .cards-grid > article:nth-child(6) {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  /* 3º item (Flow Manager) vai para 2ª linha, 3ª coluna */
+  .cards-grid > article:nth-child(3) {
+    grid-column: 3;
+    grid-row: 2;
+  }
+}
+
+@media (max-width: 1024px) {
+  .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .cards-grid { grid-template-columns: 1fr; }
+}
+
+/* -----------------------------
+   Card
+------------------------------ */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 22px;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+  outline: none; /* usaremos focus visível customizado */
+}
+
+.card:hover {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-md);
+}
+
+.card:focus-visible {
+  box-shadow: 0 0 0 3px rgba(0, 179, 126, 0.35), var(--shadow-md);
+}
+
+.card-header {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.card-text {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 18px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* -----------------------------
+   Botões
+------------------------------ */
+.btn {
+  appearance: none;
+  border: 0;
+  border-radius: var(--radius-btn);
+  padding: 10px 16px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  text-decoration: none; /* para <a> parecer botão */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 140ms ease, background-color 140ms ease, filter 140ms ease;
+}
+
+.btn:active { transform: translateY(1px); }
+
+/* Botão “Abrir” (verde) */
+/* Botão “Abrir” (azul, como no Chat Monitor) */
+.btn-open { background: var(--accent); color: #fff; }
+.btn-open:hover, .btn-open:focus-visible { background: var(--accent-strong); filter: brightness(1.02); }
+
+/* Botão “Em breve” (marrom escuro) */
+.btn-soon {
+  background: var(--brown);
+  color: var(--brown-text);
+  cursor: not-allowed; /* comunica indisponível */
+}
+
+.btn-soon:hover,
+.btn-soon:focus-visible {
+  filter: brightness(1.05);
+}
+
+/* -----------------------------
+   Rodapé
+------------------------------ */
+.site-footer {
+  margin-top: 40px;
+  padding: 26px 0 40px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* -----------------------------
+   Preferências de usuário
+------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .btn { transition: none; }
+}

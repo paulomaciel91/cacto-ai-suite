@@ -1,0 +1,72 @@
+﻿/* Test Lab: complementos ao tema do Chat Monitor */
+
+/* Suavidade ao mudar status */
+.bubble { transition: all 0.3s ease; }
+
+/* Layout dos botÃµes de aÃ§Ã£o por mensagem */
+.actions { display: flex; gap: 8px; margin-top: 6px; }
+.actions .btn { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
+.actions .btn.danger { background: #b91c1c; color: #fff; }
+.actions .btn.primary { background: #2563eb; color: #fff; }
+.actions .btn.secondary { background: rgba(255,255,255,0.12); color: #e5e7eb; }
+
+/* Status visual por data-status */
+.bubble[data-status="pendente"] { outline: 2px dashed #fbbf24; outline-offset: 2px; }
+.bubble[data-status="aprovado"] { outline: 2px solid #22c55e; outline-offset: 2px; }
+.bubble[data-status="editado"] { outline: 2px solid #3b82f6; outline-offset: 2px; }
+.bubble[data-status="encerrado"] { outline: 2px solid #ef4444; outline-offset: 2px; opacity: 0.85; }
+
+.status-tag { margin-top: 6px; font-size: 12px; color: #cbd5e1; text-align: right; }
+
+/* Classes de status pÃ³s-aÃ§Ã£o (requisito Codex) */
+.status-aprovada { border: 2px solid #00c853 !important; }
+.status-editada { border: 2px solid #2979ff !important; }
+.status-encerrada { border: 2px solid #ff1744 !important; }
+
+/* Lista de cenÃ¡rios no modal (inspirado no Prompt Studio) */
+.agent-results { margin-top: 10px; display: grid; gap: 6px; max-height: 40vh; overflow: auto; }
+.agent-item { padding: 8px 10px; border: 1px solid #1e293b; border-radius: 8px; background: #0f172a; cursor: pointer; }
+.agent-item:hover { background: #12203a; }
+.agent-item.selected { outline: 2px solid #2563eb; outline-offset: 2px; }
+.agent-empty { color: #94a3b8; font-size: 13px; }
+
+/* ExibiÃ§Ã£o do cenÃ¡rio selecionado */
+.scenario-display { display: flex; align-items: center; gap: 8px; }
+.scenario-pill { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); padding: 6px 10px; border-radius: 20px; font-size: 12px; color: #e5e7eb; }
+
+/* Alinhamentos para direita/esquerda reaproveitando classes do Chat Monitor */
+.msg-wrapper { display: flex; margin: 6px 0; }
+.align-left { justify-content: flex-start; }
+.align-right { justify-content: flex-end; }
+
+/* Cores das bolhas (cliente Ã  direita azul, agente Ã  esquerda cinza) */
+.bubble.user { background: #1e40af; color: #e6f0ff; border-bottom-right-radius: 6px; }
+.bubble.agent { background: #e5e7eb; color: #0b1426; border-bottom-left-radius: 6px; }
+
+.logo { text-decoration: none; color: inherit; display: inline-block; }
+
+
+/* ----------------------------------------------
+   Header de controles (Fluxo/Cenário) alinhado
+   - 2 colunas: esquerda Fluxo, direita Cenário
+   - Botões alinham à direita abaixo de Cenário
+----------------------------------------------- */
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto; /* Fluxo | Cenário | Botões */
+  gap: 12px 16px;
+  align-items: center; /* alinha verticalmente tudo */
+}
+
+.controls .scenario-display:nth-of-type(1) { grid-column: 1; }
+.controls .scenario-display:nth-of-type(2) { grid-column: 2; justify-content: flex-end; }
+
+.controls .buttons {
+  grid-column: 3; /* terceira coluna: botões */
+  justify-content: flex-end;
+  display: flex;
+  gap: 8px;
+}
+
+/* Melhorar contraste dos rótulos */
+.controls .label { color: #e5e7eb; font-weight: 600; }

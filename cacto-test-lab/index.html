@@ -1,0 +1,102 @@
+﻿
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cacto Test Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../chat-monitor/style.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <a class="logo" href="../index.html" aria-label="Página inicial">🌵</a>
+        <div class="title">
+          <h1>Cacto Test Lab</h1>
+          <p class="subtitle">Painel de Aprovação de Mensagens</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        
+        <button id="btnBuscarCenarios" class="btn">Buscar Cenários</button>
+        <button id="btnAbrirCriarCenario" class="btn btn-primary">Criar Cenário</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="controls" aria-label="Controles do Test Lab">
+        <div class="scenario-display">
+          <span class="label">Fluxo</span>
+          <span id="fluxoSelecionado" class="scenario-pill" title="Fluxo selecionado">Nenhum fluxo</span>
+        </div>
+        <div class="scenario-display">
+          <span class="label">Cenário</span>
+          <span id="cenarioSelecionado" class="scenario-pill" title="Cenário selecionado">Nenhum cenário</span>
+        </div>
+        <div class="buttons">
+          <button id="btnIniciarTeste" class="btn btn-outline">Iniciar Teste</button>
+          <button id="btnEncerrarTeste" class="btn danger">Encerrar Teste</button>
+        </div>
+        <div id="status" class="status" aria-live="polite"></div>
+      </section>
+
+      <section id="messages" class="messages" aria-live="polite" aria-label="Página inicial"></section>
+    </main>
+
+    <footer class="footer">
+      <span>Feito com &#127797; Cacto AI &mdash; Todos os direitos reservados.</span>
+    </footer>
+
+    <!-- Modal: Selecionar Cenário -->
+    <div id="modalCenario" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Selecionar Cenário</h2>
+          <button id="fecharModalCenario" class="btn btn-outline">Fechar</button>
+        </div>
+        <div class="modal-body">
+          <label class="label" for="cenarioFluxo">Fluxo</label>
+          <input id="cenarioFluxo" class="input" type="text" placeholder="ex: whatsapp-suporte" />
+          <div class="buttons" style="margin-top: 6px;">
+            <button id="btnBuscarCenario" class="btn">Buscar</button>
+          </div>
+          <div id="cenarioResultados" class="agent-results" aria-live="polite"></div>
+          <div class="buttons" style="margin-top: 10px;">
+            <button id="btnConfirmarCenario" class="btn btn-primary">Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Criar Cenário -->
+    <div id="modalCriarCenario" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Criar Cenário</h2>
+          <button id="fecharModalCriarCenario" class="btn btn-outline">Fechar</button>
+        </div>
+        <div class="modal-body">
+          <label class="label" for="novoCenarioFluxo">Fluxo</label>
+          <input id="novoCenarioFluxo" class="input" type="text" placeholder="ex: atendimento" />
+          <label class="label" for="novoCenarioNome">Nome do cenário</label>
+          <input id="novoCenarioNome" class="input" type="text" placeholder="ex: saudacao_inicial" />
+          <label class="label" for="novoCenarioDescricao">Descrição</label>
+          <input id="novoCenarioDescricao" class="input" type="text" placeholder="Breve descrição do cenário" />
+          <div class="buttons" style="margin-top: 10px;">
+            <button id="btnCriarCenarioConfirm" class="btn btn-primary">Criar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="assets/js/main.js"></script>
+  </body>
+  </html>
+
+
+
+

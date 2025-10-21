@@ -1,0 +1,172 @@
+﻿<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cacto Prompt Studio  —  Edição de Prompt</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14'%3E%F0%9F%8C%B5%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <a class="logo" href="../index.html" aria-label="Página inicial">🌵</a>
+        <div class="title">
+          <h1>Cacto Prompt Studio</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-outline" id="btnCopiar">Copiar</button>
+        <button class="btn btn-outline" id="btnBaixar">Baixar</button>
+        <button id="btnBuscarPrompts" class="btn">Buscar Prompts</button>
+        <button id="btnAbrirCriarAgente" class="btn btn-primary">Novo Agente</button>
+        <button id="btnLimparMemoria" class="btn btn-outline" title="Limpar toda a memória de chat">Limpar memória</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="controls" aria-label="Página inicial">
+        <div class="agent-display" style="display:none;">
+          <span id="agentNome" class="agent-pill" title="Agente selecionado">Nenhum agente</span>
+          <button id="btnSelecionarAgente" class="btn">Selecionar Agente</button>
+          <button id="btnCriarAgente" class="btn btn-outline">Criar Agente</button>
+        </div>
+
+        <div class="buttons" style="display:none;">
+          <button id="btnCarregarExecucao" class="btn">Carregar ExecuÃ§Ã£o</button>
+        </div>
+
+        <div class="agent-display" style="gap:10px; flex-wrap: wrap;">
+          <label class="label" for="inputFluxo">Fluxo</label>
+          <input id="inputFluxo" class="input" type="text" placeholder="ex: whatsapp-suporte" />
+
+          <label class="label" for="inputAgente">Agente</label>
+          <input id="inputAgente" class="input" type="text" placeholder="ex: atendimento_v1" />
+
+          <label class="label" for="inputVersao">VersÃ£o</label>
+          <input id="inputVersao" class="input" type="number" min="1" step="1" value="1" />
+          <span id="promptAtivoStatus" class="agent-badge pill-lg" aria-live="polite" aria-hidden="true" hidden style="margin-left: 8px;"></span>
+
+          <button id="btnCarregarPrompt" class="btn btn-primary">Carregar Prompt</button>
+        </div>
+
+        <div id="status" class="status" aria-live="polite"></div>
+      </section>
+
+      <section class="prompt-card" aria-label="Página inicial">
+        <div class="prompt-header">
+          <div class="prompt-logo">🌵</div>
+          <div class="prompt-title">Seu Prompt</div>
+          <span id="promptAtualizadoEm" class="prompt-meta prompt-updated" aria-live="polite"></span>
+        </div>
+        <textarea id="promptInput" class="prompt-textarea" placeholder="Digite seu prompt aqui..."></textarea>
+        <div class="prompt-meta-row">
+          <span id="promptLineCount" class="prompt-meta" aria-live="polite">0 linhas</span>
+        </div>
+        <div class="agent-display" style="gap:10px; flex-wrap: wrap; justify-content: flex-end;">
+          <button id="btnSalvarPrompt" class="btn">Salvar Prompt</button>
+          <button id="btnSalvarComoNovo" class="btn btn-outline">Salvar como novo</button>
+          <label class="label" for="chkAtivo" style="display:flex;align-items:center;gap:8px; margin:0 0 0 6px;">
+            <input id="chkAtivo" type="checkbox" /> Tornar ativo
+          </label>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Feito com &#127797; Cacto AI &mdash; Todos os direitos reservados.</span>
+    </footer>
+
+    <!-- Modal: Selecionar Agente -->
+    <div id="modalAgente" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Selecionar Agente</h2>
+          <button id="fecharModalAgente" class="btn btn-outline">Fechar</button>
+        </div>
+        <div class="modal-body">
+          <label class="label" for="agenteFluxo">Fluxo</label>
+          <input id="agenteFluxo" class="input" type="text" placeholder="ex: whatsapp-suporte" />
+
+          <label class="label" for="agenteBase">Nome base do agente</label>
+          <input id="agenteBase" class="input" type="text" placeholder="ex: atendimento" />
+
+          <!-- Campo versÃ£o removido do modal de busca -->
+          <div class="buttons" style="margin-top: 6px;">
+            <button id="btnBuscarAgente" class="btn">Buscar</button>
+          </div>
+          <label class="label" for="agenteAtivoOnly" style="display:flex;align-items:center;gap:8px;">
+            <input id="agenteAtivoOnly" type="checkbox" /> Somente com prompt ativo
+          </label>
+          <div id="agenteResultados" class="agent-results" aria-live="polite"></div>
+          <div class="buttons" style="margin-top: 10px;">
+            <button id="btnConfirmarAgente" class="btn btn-primary">Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Criar Agente -->
+    <div id="modalCriarAgente" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Criar Agente</h2>
+          <button id="fecharModalCriar" class="btn btn-outline">Fechar</button>
+        </div>
+        <div class="modal-body">
+          <label class="label" for="novoBase">Fluxo</label>
+          <input id="novoBase" class="input" type="text" placeholder="ex: atendimento" />
+
+          <label class="label" for="novoVersao">VersÃ£o (nÃºmero)</label>
+          <input id="novoVersao" class="input" type="number" min="1" step="1" value="1" />
+
+          <label class="label" for="novoDescricao">DescriÃ§Ã£o</label>
+          <input id="novoDescricao" class="input" type="text" placeholder="Breve descriÃ§Ã£o do agente" />
+
+          <label class="label" for="novoPrompt">Prompt inicial</label>
+          <textarea id="novoPrompt" class="prompt-textarea" placeholder="Prompt inicial do agente..."></textarea>
+
+          <label class="label" for="novoAtivo" style="display:flex;align-items:center;gap:8px; margin-top:6px;">
+            <input id="novoAtivo" type="checkbox" /> Tornar ativo
+          </label>
+
+          <div class="preview">Nome final: <code id="novoPreview">nome_agente_v1</code></div>
+          <div class="buttons" style="margin-top: 10px;">
+            <button id="btnCriarAgenteConfirm" class="btn btn-primary">Criar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Salvar Como Novo -->
+    <div id="modalSalvarComoNovo" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title">Salvar como novo</h2>
+          <button id="fecharModalSalvarComoNovo" class="btn btn-outline">Fechar</button>
+        </div>
+        <div class="modal-body">
+          <label class="label" for="novoAgenteNome">Nome do agente</label>
+          <input id="novoAgenteNome" class="input" type="text" placeholder="ex: atendimento_v2" />
+
+          <label class="label" for="novoAgenteVersao">VersÃ£o</label>
+          <input id="novoAgenteVersao" class="input" type="number" min="1" step="1" value="1" />
+
+          <div class="buttons" style="margin-top: 10px;">
+            <button id="btnSalvarComoNovoConfirm" class="btn btn-primary">Salvar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="script.js"></script>
+  </body>
+  </html>
+
+
+
+
+

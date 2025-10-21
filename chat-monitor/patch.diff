@@ -1,0 +1,15 @@
+*** Begin Patch
+*** Update File: index.html
+@@
+-    <title>Painel de Conversas – Cacto AI</title>
++    <title>Cacto Chat Monitor</title>
+@@
+-        <div class="title">
+-          <h1>Painel de Conversas – Cacto AI</h1>
+-          <p class="subtitle">Visualize conversas reais do WhatsApp via n8n</p>
+-        </div>
++        <div class="title">
++          <h1>Cacto Chat Monitor</h1>
++          <p class="subtitle">Cacto Chat Monitor</p>
++        </div>
+*** End Patch

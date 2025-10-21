@@ -1,0 +1,22 @@
+*** Begin Patch
+*** Update File: index.html
+@@
+-          <input id="inputVersao" class="input" type="number" min="1" step="1" value="1" />
+-          <span id="promptAtivoStatus" class="agent-badge inactive" aria-live="polite" style="align-self: end; margin-left: 8px;"></span>
++          <input id="inputVersao" class="input" type="number" min="1" step="1" value="1" />
++          <span id="promptAtivoStatus" class="agent-badge pill-lg inactive" aria-live="polite" style="margin-left: 8px;"></span>
+@@
+-        <div class="prompt-header">
+-          <div class="prompt-logo">?YO?</div>
+-          <div class="prompt-title">Seu Prompt</div>
+-        </div>
++        <div class="prompt-header">
++          <div class="prompt-header-left">
++            <div class="prompt-logo">?YO?</div>
++            <div class="prompt-title">Seu Prompt</div>
++          </div>
++          <div class="prompt-header-right">
++            <span id="promptAtualizadoEm" class="prompt-meta" aria-live="polite"></span>
++          </div>
++        </div>
+*** End Patch

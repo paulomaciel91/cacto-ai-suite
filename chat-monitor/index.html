@@ -1,0 +1,76 @@
+﻿<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cacto Chat Monitor</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='14'%3E%F0%9F%8C%B5%3C/text%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <a class="logo" href="../index.html" aria-label="Página inicial">🌵</a>
+        <div class="title">
+          <h1>Cacto Chat Monitor</h1>
+          <p class="subtitle">Cacto Chat Monitor</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        
+        <button class="btn btn-outline" id="btnVerLogs">Ver Logs</button>
+        <button class="btn btn-outline" id="btnCopiar">Copiar Markdown</button>
+        <button class="btn btn-outline" id="btnBaixar">Baixar</button>
+        <button class="btn btn-primary" id="btnSalvarDrive">Salvar no Drive</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="controls">
+        <label for="sessionId" class="sr-only">session_id</label>
+        <input id="sessionId" class="input" type="text" placeholder="Digite o session_id ou número do cliente" />
+
+        <div class="buttons">
+          <button id="btnLoad" class="btn primary">Carregar conversa</button>
+          <input id="fluxo" class="input" type="text" placeholder="Fluxo" />
+          <button id="btnRefresh" class="btn">Atualizar</button>
+          <button id="btnClear" class="btn danger">Limpar</button>
+        </div>
+
+        <div id="status" class="status" aria-live="polite"></div>
+      </section>
+
+      <section id="messages" class="messages" aria-live="polite" aria-label="Mensagens da conversa"></section>
+
+      <section class="controls secondary">
+        <div class="left-actions">
+          <button id="btnAgentePrincipal" class="btn">Principal</button>
+          <button id="btnAgenteFinalizador" class="btn">UX Finalizador</button>
+        </div>
+        <button id="btnLimparMemoria" class="btn btn-outline">Limpar memória</button>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Feito com &#127797; Cacto AI &mdash; Todos os direitos reservados.</span>
+    </footer>
+
+
+    <!-- Modal de Logs -->
+    <div id="modalLogs" class="modal" style="display:none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Logs</h2>
+          <button id="fecharModal" class="btn btn-outline" aria-label="Fechar">Fechar</button>
+        </div>
+        <div id="conteudoLogs" class="modal-body"></div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="./script.js"></script>
+  </body>
+</html>

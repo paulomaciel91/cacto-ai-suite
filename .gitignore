@@ -1,0 +1,12 @@
+# Local backups
+.backup/
+
+# OS junk
+Thumbs.db
+.DS_Store
+
+# Node (if added later)
+node_modules/
+dist/
+build/
+

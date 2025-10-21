@@ -1,0 +1,373 @@
+﻿// Cacto Test Lab â€” Painel de AprovaÃ§Ã£o de Mensagens
+// Base visual: Chat Monitor (mesmo header, tipografia e botÃµes)
+
+import { ENDPOINT_PENDENTES, ENDPOINT_APROVACAO, ENDPOINT_CENARIOS, ENDPOINT_TESTE_INICIAR, ENDPOINT_TESTE_ENCERRAR, ENDPOINT_CRIAR_CENARIO } from '../../config.js';
+
+(function () {
+  // Estado do cenário selecionado
+  let selectedScenario = '';
+  const els = {
+    fluxoInput: document.getElementById('fluxoInput'),
+    cenarioSelecionado: document.getElementById('cenarioSelecionado'),
+    btnIniciarTeste: document.getElementById('btnIniciarTeste'),
+    btnEncerrarTeste: document.getElementById('btnEncerrarTeste'),
+    messages: document.getElementById('messages'),
+    status: document.getElementById('status'),
+  };
+
+  function setStatus(text, type = 'info') {
+    els.status.textContent = text || '';
+    els.status.dataset.type = type;
+  }
+
+  function clearMessages() {
+    els.messages.innerHTML = '';
+  }
+
+  function wrapperWithAlignment(role) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'msg-wrapper';
+    if (role === 'user') wrapper.classList.add('align-right');
+    else wrapper.classList.add('align-left');
+    return wrapper;
+  }
+
+  function createBubble({ autor, mensagem, status = 'pendente', resumeUrl }) {
+    const isCliente = String(autor || '').toLowerCase().includes('cliente');
+    const role = isCliente ? 'user' : 'agent';
+
+    const wrapper = wrapperWithAlignment(role);
+    const bubble = document.createElement('div');
+    bubble.className = `bubble ${role}`;
+    bubble.dataset.status = status;
+
+    const content = document.createElement('div');
+    content.className = 'content';
+    content.textContent = mensagem || '';
+    bubble.appendChild(content);
+
+    const statusTag = document.createElement('div');
+    statusTag.className = 'status-tag';
+    updateStatusTag(statusTag, status);
+    bubble.appendChild(statusTag);
+
+    if (status === 'pendente' && resumeUrl) {
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+
+      const btnApprove = document.createElement('button');
+      btnApprove.className = 'btn primary';
+      btnApprove.textContent = 'Aprovar';
+      btnApprove.addEventListener('click', async () => {
+        await handleAction('approve', { resumeUrl, bubble, statusTag, actions });
+      });
+
+      const btnEdit = document.createElement('button');
+      btnEdit.className = 'btn secondary';
+      btnEdit.textContent = 'Editar';
+      btnEdit.addEventListener('click', async () => {
+        await handleAction('edit', { resumeUrl, bubble, statusTag, actions, content });
+      });
+
+      const btnEnd = document.createElement('button');
+      btnEnd.className = 'btn danger';
+      btnEnd.textContent = 'Encerrar';
+      btnEnd.addEventListener('click', async () => {
+        await handleAction('end', { resumeUrl, bubble, statusTag, actions });
+      });
+
+      actions.appendChild(btnApprove);
+      actions.appendChild(btnEdit);
+      actions.appendChild(btnEnd);
+      bubble.appendChild(actions);
+    }
+
+    wrapper.appendChild(bubble);
+    return wrapper;
+  }
+
+  function updateStatusTag(el, status) {
+    const map = {
+      pendente: 'â³ Aguardando aprovaÃ§Ã£o',
+      aprovada: 'âœ… Aprovada',
+      editada: 'âœï¸ Editada',
+      encerrada: 'ðŸš« Encerrada',
+    };
+    el.textContent = map[status] || '';
+  }
+
+  async function handleAction(type, ctx) {
+    const { resumeUrl, bubble, statusTag, actions, content } = ctx || {};
+    if (!resumeUrl) return;
+
+    if (type === 'approve') {
+      await fetch(resumeUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'approve' }),
+      });
+      bubble.dataset.status = 'aprovada';
+      bubble.classList.add('status-aprovada');
+      updateStatusTag(statusTag, 'aprovada');
+      actions?.remove();
+    } else if (type === 'edit') {
+      const novoTexto = window.prompt('Edite a mensagem:', content?.textContent ?? '') || '';
+      if (novoTexto) {
+        await fetch(resumeUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'edit', mensagem_editada: novoTexto }),
+        });
+        if (content) content.textContent = novoTexto;
+        bubble.dataset.status = 'editada';
+        bubble.classList.add('status-editada');
+        updateStatusTag(statusTag, 'editada');
+        actions?.remove();
+      }
+    } else if (type === 'end') {
+      await fetch(resumeUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'end' }),
+      });
+      bubble.dataset.status = 'encerrada';
+      bubble.classList.add('status-encerrada');
+      updateStatusTag(statusTag, 'encerrada');
+      actions?.remove();
+    }
+
+    // Registro opcional no endpoint de aprovaÃ§Ã£o, se configurado
+    try {
+      if (typeof ENDPOINT_APROVACAO === 'string' && ENDPOINT_APROVACAO) {
+        await fetch(ENDPOINT_APROVACAO, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type, resumeUrl }),
+        });
+      }
+    } catch (_) {}
+  }
+
+  function append(wrapper) {
+    els.messages.appendChild(wrapper);
+    els.messages.scrollTo({ top: els.messages.scrollHeight, behavior: 'smooth' });
+  }
+
+  function normalizePendentes(raw) {
+    const arr = Array.isArray(raw) ? raw : [];
+    return arr.map((m) => ({
+      id: m.id,
+      autor: m.autor || m.quem || m.role || 'agente',
+      mensagem: m.mensagem || m.message || m.texto || m.text || '',
+      resumeUrl: m.resumeUrl || m.resume_url || m.url || '',
+      teste_id: m.teste_id || m.testeId || m.session_id || m.sessionId,
+    }));
+  }
+
+    // Renderiza lista de cenários disponíveis
+  function renderCenarios(data) {
+    const arr = Array.isArray(data) ? data : [];
+    if (!arr.length) {
+      setStatus('Nenhum cenário disponível.', 'info');
+      return;
+    }
+    setStatus(`Cenários disponíveis: ${arr.length}`, 'ok');
+    // Render como bolhas de sistema clicáveis
+    arr.forEach((c) => {
+      const name = c.nome || c.name || c.titulo || `Cenário ${c.id ?? ''}`;
+      const wrap = wrapperWithAlignment('agent');
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble system';
+      bubble.textContent = name;
+      bubble.style.cursor = 'pointer';
+      bubble.addEventListener('click', () => {
+        selectedScenario = c;
+        setStatus(`Cenário selecionado: ${name}`, 'ok');
+      });
+      wrap.appendChild(bubble);
+      append(wrap);
+    });
+  }
+  function renderMensagens(data) {
+    clearMessages();
+    const items = normalizePendentes(data);
+    if (!items.length) {
+      setStatus('Nenhuma mensagem pendente encontrada.', 'info');
+      return;
+    }
+    items.forEach((it) => {
+      const wrap = createBubble({
+        autor: it.autor,
+        mensagem: it.mensagem,
+        resumeUrl: it.resumeUrl,
+        status: 'pendente',
+      });
+      append(wrap);
+    });
+    setStatus(`Carregadas: ${items.length} mensagens pendentes.`, 'ok');
+  }
+
+    // Enviar nome do fluxo para o endpoint de cenários
+    }
+
+  // Botão fixo: iniciar teste
+  async function iniciarTeste() {
+    const fluxo = (els.fluxoInput?.value || '').trim();
+    if (!fluxo) { setStatus('Informe o nome do fluxo.', 'warn'); return; }
+    if (!selectedScenario) { setStatus('Selecione um cenário para iniciar.', 'warn'); return; }
+    try {
+      const res = await fetch(ENDPOINT_TESTE_INICIAR, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ acao: 'iniciar', cenario: selectedScenario, fluxo }),
+      });
+      if (!res.ok) throw new Error(HTTP );
+      setStatus('Teste iniciado.', 'ok');
+    } catch (e) {
+      console.error(e);
+      setStatus(Falha ao iniciar teste: , 'error');
+    }
+  }
+  }
+
+  // Botão fixo: encerrar teste
+  async function encerrarTeste() {
+    const fluxo = (els.fluxoInput?.value || '').trim();
+    try {
+      const res = await fetch(ENDPOINT_TESTE_ENCERRAR, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ acao: 'encerrar', cenario: selectedScenario || undefined, fluxo: fluxo || undefined }),
+      });
+      if (!res.ok) throw new Error(HTTP );
+      setStatus('Teste encerrado.', 'ok');
+      selectedScenario = '';
+      if (els.cenarioSelecionado) els.cenarioSelecionado.textContent = 'Nenhum cenário';
+    } catch (e) {
+      console.error(e);
+      setStatus(Falha ao encerrar teste: , 'error');
+    }
+  }
+  }
+
+  
+  els.btnIniciarTeste?.addEventListener('click', iniciarTeste);
+  els.btnEncerrarTeste?.addEventListener('click', encerrarTeste);
+window.handleAction = handleAction;
+  // --- Modais estilo Prompt Studio ---
+  const modal = {
+    buscarBtn: document.getElementById('btnBuscarCenarios'),
+    criarBtn: document.getElementById('btnAbrirCriarCenario'),
+    // selecionar cenário
+    modalCenario: document.getElementById('modalCenario'),
+    fecharModalCenario: document.getElementById('fecharModalCenario'),
+    cenarioFluxo: document.getElementById('cenarioFluxo'),
+    btnBuscarCenario: document.getElementById('btnBuscarCenario'),
+    cenarioResultados: document.getElementById('cenarioResultados'),
+    btnConfirmarCenario: document.getElementById('btnConfirmarCenario'),
+    // criar cenário
+    modalCriar: document.getElementById('modalCriarCenario'),
+    fecharModalCriar: document.getElementById('fecharModalCriarCenario'),
+    novoFluxo: document.getElementById('novoCenarioFluxo'),
+    novoNome: document.getElementById('novoCenarioNome'),
+    novoDescricao: document.getElementById('novoCenarioDescricao'),
+    btnCriarConfirm: document.getElementById('btnCriarCenarioConfirm'),
+  };
+
+  function openModal(el, open = true) {
+    if (!el) return;
+    if (open) {
+      el.classList.remove('hidden');
+      el.setAttribute('aria-hidden', 'false');
+      try { el.style.display = 'grid'; } catch {}
+    } else {
+      el.classList.add('hidden');
+      el.setAttribute('aria-hidden', 'true');
+      try { el.style.display = 'none'; } catch {}
+    }
+  }
+
+  // Abrir/fechar modais
+  modal.buscarBtn?.addEventListener('click', () => openModal(modal.modalCenario, true));
+  modal.criarBtn?.addEventListener('click', () => openModal(modal.modalCriar, true));
+  modal.fecharModalCenario?.addEventListener('click', () => openModal(modal.modalCenario, false));
+  modal.fecharModalCriar?.addEventListener('click', () => openModal(modal.modalCriar, false));
+
+  // Buscar cenários por fluxo (GET)
+  modal.btnBuscarCenario?.addEventListener('click', async () => {
+    const fluxo = modal.cenarioFluxo?.value?.trim() || '';
+    if (!fluxo) { setStatus('Informe o fluxo para buscar cenários.', 'warn'); return; }
+    setStatus('Buscando cenários…');
+    try {
+      const url = new URL(ENDPOINT_CENARIOS);
+      url.searchParams.set('fluxo', fluxo);
+      const res = await fetch(url.toString(), { method: 'GET' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      // Render resultados no modal como lista
+      modal.cenarioResultados.innerHTML = '';
+      const arr = Array.isArray(data) ? data : [];
+      if (!arr.length) {
+        modal.cenarioResultados.innerHTML = '<div class="agent-empty">Nenhum cenário encontrado.</div>';
+        setStatus('Nenhum cenário encontrado.', 'info');
+        return;
+      }
+      arr.forEach((c) => {
+        const name = c.nome || c.name || c.titulo || `Cenário ${c.id ?? ''}`;
+        const item = document.createElement('div');
+        item.className = 'agent-item';
+        item.textContent = name;
+        item.addEventListener('click', () => {
+          selectedScenario = c;
+          // marca visualmente
+          [...modal.cenarioResultados.children].forEach(ch => ch.classList.remove('selected'));
+          item.classList.add('selected');
+          setStatus(`Cenário selecionado: ${name}`, 'ok');
+        });
+        modal.cenarioResultados.appendChild(item);
+      });
+      setStatus(`Cenários carregados: ${arr.length}`, 'ok');
+    } catch (e) {
+      console.error(e);
+      setStatus(`Falha ao buscar cenários: ${e.message}`, 'error');
+    }
+  });
+
+  modal.btnConfirmarCenario?.addEventListener('click', () => {
+    if (!selectedScenario) { setStatus('Selecione um cenário.', 'warn'); return; }
+    openModal(modal.modalCenario, false);
+  });
+
+  // Criar cenário
+  modal.btnCriarConfirm?.addEventListener('click', async () => {
+    const fluxo = modal.novoFluxo?.value?.trim() || '';
+    const nome = modal.novoNome?.value?.trim() || '';
+    const descricao = modal.novoDescricao?.value?.trim() || '';
+    if (!fluxo || !nome) { setStatus('Informe fluxo e nome do cenário.', 'warn'); return; }
+    setStatus('Criando cenário…');
+    try {
+      const res = await fetch(ENDPOINT_CRIAR_CENARIO, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fluxo, nome, descricao }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setStatus('Cenário criado com sucesso.', 'ok');
+      openModal(modal.modalCriar, false);
+    } catch (e) {
+      console.error(e);
+      setStatus(`Falha ao criar cenário: ${e.message}`, 'error');
+    }
+  });
+})();
+
+
+
+
+
+
+
+
+
+
+

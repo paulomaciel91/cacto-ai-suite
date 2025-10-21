@@ -1,0 +1,24 @@
+﻿// ==============================
+// ConfiguraÃ§Ãµes â€” Cacto Test Lab
+// ==============================
+
+// Endpoints (n8n)
+export const API_BASE_URL = "https://flow.cactoai.com/webhook";
+// Lista mensagens pendentes de aprovaÃ§Ã£o (GET)
+export const ENDPOINT_PENDENTES = `${API_BASE_URL}/pendentes`;
+// Opcional: registrar aÃ§Ãµes em banco (POST)
+export const ENDPOINT_APROVACAO = `${API_BASE_URL}/aprovacao`;
+// Fallback para compatibilidade, quando pendentes nÃ£o estiver disponÃ­vel
+export const ENDPOINT_CENARIOS = `${API_BASE_URL}/cenarios`;
+
+// Outros endpoints existentes no projeto (nÃ£o usados diretamente aqui)
+export const ENDPOINT_TEST_LAB = `${API_BASE_URL}/test-lab/start`;
+export const ENDPOINT_LIMPAR = `${API_BASE_URL}/memoria-limpar`;
+
+// Supabase (nÃ£o obrigatÃ³rio para este painel)
+export const SUPABASE_URL = "";
+export const SUPABASE_ANON_KEY = "";
+export const SUPABASE_TABLE = "";
+export const SUPABASE_FIELDS = {};
+
+
