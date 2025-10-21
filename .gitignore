@@ -10,3 +10,5 @@ node_modules/
 dist/
 build/
 
+# Windows reserved name that appeared locally
+CON
