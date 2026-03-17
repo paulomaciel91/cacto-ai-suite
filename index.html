@@ -1,80 +1,205 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Cacto AI Suite</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta
+      name="description"
+      content="Portal da Cacto AI Suite para acessar módulos, monitorar operações e acelerar fluxos com IA."
+    />
+    <link rel="icon" type="image/webp" href="logo.webp" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
   <body>
-    <header class="site-header">
-      <div class="container">
-        <h1 class="title">🌵 Cacto AI Suite</h1>
-        <p class="subtitle">Plataforma de agentes inteligentes</p>
-      </div>
-    </header>
+    <div class="page-shell">
+      <header class="site-header">
+        <div class="container header-bar">
+          <a class="brand" href="#top" aria-label="Cacto AI Suite">
+            <img class="brand-logo" src="logo.webp" alt="Logo Cacto AI Suite" />
+            <span class="brand-text">
+              <strong>Cacto AI Suite</strong>
+              <small>Intelligence workspace</small>
+            </span>
+          </a>
 
-    <main class="container">
-      <h2 class="section-lead">Módulos da Plataforma</h2>
-      <section class="cards-grid" aria-label="Módulos">
-        <article class="card" tabindex="0">
-          <div class="card-header">🌵 Prompt Studio</div>
-          <p class="card-text">Crie, gerencie e versione prompts com praticidade.</p>
-          <div class="card-actions">
-            <a class="btn btn-open" href="prompt-studio/index.html">Abrir</a>
+          <nav class="top-nav" aria-label="Navegação principal">
+            <a href="#modulos">Módulos</a>
+            <a href="#visao-geral">Visão geral</a>
+          </nav>
+        </div>
+      </header>
+
+      <main id="top">
+        <section class="hero">
+          <div class="container hero-grid">
+            <div class="hero-copy">
+              <span class="eyebrow">Ecossistema operacional para IA</span>
+              <h1>Uma base mais clara, moderna e profissional para seus agentes.</h1>
+              <p class="hero-text">
+                Centralize criação de prompts, monitoramento, testes e expansão
+                da sua operação em uma interface mais confiável e pronta para crescer.
+              </p>
+
+              <div class="hero-actions">
+                <a class="btn btn-primary" href="#modulos">Explorar módulos</a>
+                <a class="btn btn-secondary" href="prompt-studio/index.html">Abrir Prompt Studio</a>
+              </div>
+
+              <dl class="hero-metrics" id="visao-geral">
+                <div>
+                  <dt>3</dt>
+                  <dd>Módulos ativos</dd>
+                </div>
+                <div>
+                  <dt>24/7</dt>
+                  <dd>Operação contínua</dd>
+                </div>
+                <div>
+                  <dt>+IA</dt>
+                  <dd>Expansão planejada</dd>
+                </div>
+              </dl>
+            </div>
+
+            <aside class="hero-panel" aria-label="Resumo da plataforma">
+              <div class="panel-badge">Workspace central</div>
+              <h2>Camada de operação unificada</h2>
+              <p>
+                Organize ferramentas, acompanhe performance e reduza atrito entre
+                produto, operação e inteligência.
+              </p>
+
+              <ul class="panel-list">
+                <li>Prompt engineering com versionamento</li>
+                <li>Monitoramento de conversas e qualidade</li>
+                <li>Ambiente de testes antes do deploy</li>
+              </ul>
+            </aside>
           </div>
-        </article>
+        </section>
 
-        <article class="card" tabindex="0">
-          <div class="card-header">🌵 Chat Monitor</div>
-          <p class="card-text">Acompanhe conversas, métricas e qualidade em tempo real.</p>
-          <div class="card-actions">
-            <a class="btn btn-open" href="chat-monitor/index.html">Abrir</a>
+        <section class="modules-section" id="modulos">
+          <div class="container">
+            <div class="section-heading">
+              <div>
+                <span class="eyebrow">Módulos da plataforma</span>
+                <h2>Ferramentas organizadas por operação</h2>
+              </div>
+              <p>
+                Os módulos ativos ficam em destaque. Os próximos lançamentos já
+                aparecem como parte do roadmap visual da suíte.
+              </p>
+            </div>
+
+            <section class="cards-grid" aria-label="Módulos disponíveis">
+              <article class="card card-live" tabindex="0">
+                <span class="card-tag">Ativo</span>
+                <div class="card-header">
+                  <h3>Prompt Studio</h3>
+                  <span>01</span>
+                </div>
+                <p class="card-text">
+                  Criação, organização e evolução de prompts com estrutura mais
+                  consistente para o time.
+                </p>
+                <div class="card-actions">
+                  <a class="btn btn-primary" href="prompt-studio/index.html">Abrir módulo</a>
+                </div>
+              </article>
+
+              <article class="card card-live" tabindex="0">
+                <span class="card-tag">Ativo</span>
+                <div class="card-header">
+                  <h3>Chat Monitor</h3>
+                  <span>02</span>
+                </div>
+                <p class="card-text">
+                  Visualize conversas, acompanhe métricas críticas e observe a
+                  qualidade operacional em tempo real.
+                </p>
+                <div class="card-actions">
+                  <a class="btn btn-primary" href="chat-monitor/index.html">Abrir módulo</a>
+                </div>
+              </article>
+
+              <article class="card card-live" tabindex="0">
+                <span class="card-tag">Ativo</span>
+                <div class="card-header">
+                  <h3>Cacto Test Lab</h3>
+                  <span>03</span>
+                </div>
+                <p class="card-text">
+                  Simule cenários, valide respostas e teste comportamentos antes
+                  de colocar mudanças em produção.
+                </p>
+                <div class="card-actions">
+                  <a class="btn btn-primary" href="cacto-test-lab/index.html">Abrir módulo</a>
+                </div>
+              </article>
+
+              <article class="card card-soon" tabindex="0">
+                <span class="card-tag">Roadmap</span>
+                <div class="card-header">
+                  <h3>Flow Manager</h3>
+                  <span>04</span>
+                </div>
+                <p class="card-text">
+                  Orquestração de fluxos, automações e integrações entre agentes
+                  em uma única camada visual.
+                </p>
+                <div class="card-actions">
+                  <button class="btn btn-tertiary btn-soon" type="button" aria-disabled="true">Em breve</button>
+                </div>
+              </article>
+
+              <article class="card card-soon" tabindex="0">
+                <span class="card-tag">Roadmap</span>
+                <div class="card-header">
+                  <h3>Analytics</h3>
+                  <span>05</span>
+                </div>
+                <p class="card-text">
+                  Camada analítica com relatórios, tendências e visão executiva
+                  sobre performance de IA.
+                </p>
+                <div class="card-actions">
+                  <button class="btn btn-tertiary btn-soon" type="button" aria-disabled="true">Em breve</button>
+                </div>
+              </article>
+
+              <article class="card card-soon" tabindex="0">
+                <span class="card-tag">Roadmap</span>
+                <div class="card-header">
+                  <h3>Agent Hub</h3>
+                  <span>06</span>
+                </div>
+                <p class="card-text">
+                  Repositório central para agentes, ativos compartilhados e
+                  governança da operação.
+                </p>
+                <div class="card-actions">
+                  <button class="btn btn-tertiary btn-soon" type="button" aria-disabled="true">Em breve</button>
+                </div>
+              </article>
+            </section>
           </div>
-        </article>
+        </section>
+      </main>
 
-        <article class="card" tabindex="0">
-          <div class="card-header">🌵 Flow Manager</div>
-          <p class="card-text">Orquestre fluxos e integrações entre agentes.</p>
-          <div class="card-actions">
-            <button class="btn btn-soon" type="button" aria-disabled="true">Em breve</button>
-          </div>
-        </article>
-
-        <article class="card" tabindex="0">
-          <div class="card-header">🌵 Analytics</div>
-          <p class="card-text">Relatórios e insights para decisões mais inteligentes.</p>
-          <div class="card-actions">
-            <button class="btn btn-soon" type="button" aria-disabled="true">Em breve</button>
-          </div>
-        </article>
-
-        <article class="card" tabindex="0">
-          <div class="card-header">🌵 Agent Hub</div>
-          <p class="card-text">Central de agentes e recursos compartilhados.</p>
-          <div class="card-actions">
-            <button class="btn btn-soon" type="button" aria-disabled="true">Em breve</button>
-          </div>
-        </article>
-
-        <article class="card" tabindex="0">
-          <div class="card-header">🌵 Cacto Test Lab</div>
-          <p class="card-text">Simule cenários reais e valide respostas antes do deploy.</p>
-          <div class="card-actions">
-            <a class="btn btn-open" href="cacto-test-lab/index.html">Abrir</a>
-          </div>
-        </article>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <div class="container">
-        <small>Feito com 🌵 Cacto AI — Todos os direitos reservados.</small>
-      </div>
-    </footer>
+      <footer class="site-footer">
+        <div class="container footer-content">
+          <p>Cacto AI Suite</p>
+          <small>Plataforma de agentes inteligentes com visual renovado.</small>
+        </div>
+      </footer>
+    </div>
 
     <script src="assets/js/main.js"></script>
   </body>

@@ -1,22 +1,51 @@
-// Cacto AI Suite — script principal
-// Mantido propositalmente minimalista. Expanda conforme necessidade.
-
 (function () {
-  'use strict';
+  "use strict";
 
-  // Impede interação dos botões "Em breve" e fornece feedback mínimo.
-  document.querySelectorAll('.btn-soon').forEach(function (btn) {
-    btn.addEventListener('click', function (ev) {
-      ev.preventDefault();
-      // Sinalização leve de estado (sem popups intrusivos)
-      btn.style.filter = 'brightness(1.1)';
-      setTimeout(function () { btn.style.filter = ''; }, 120);
-    });
+  var revealItems = document.querySelectorAll(".hero-copy, .hero-panel, .card, .site-footer");
+
+  revealItems.forEach(function (item) {
+    item.classList.add("reveal");
   });
 
-  // Log discreto de inicialização (útil em desenvolvimento)
-  if (typeof window !== 'undefined') {
-    console.debug('[Cacto AI Suite] Portal iniciado.');
-  }
-})();
+  if ("IntersectionObserver" in window) {
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.18
+      }
+    );
 
+    revealItems.forEach(function (item) {
+      observer.observe(item);
+    });
+  } else {
+    revealItems.forEach(function (item) {
+      item.classList.add("is-visible");
+    });
+  }
+
+  document.querySelectorAll(".btn-soon").forEach(function (button) {
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+      button.animate(
+        [
+          { transform: "translateX(0)" },
+          { transform: "translateX(-3px)" },
+          { transform: "translateX(3px)" },
+          { transform: "translateX(0)" }
+        ],
+        {
+          duration: 240,
+          easing: "ease-out"
+        }
+      );
+    });
+  });
+})();
