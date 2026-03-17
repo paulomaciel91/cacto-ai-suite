@@ -246,7 +246,7 @@ async function carregarPrompt() {
   if (!agente) {
     setStatus('Informe o agente.', 'warn');
     els.inputAgente?.focus();
-    return;
+    return false;
   }
 
   setStatus('Carregando prompt...');
@@ -279,9 +279,11 @@ async function carregarPrompt() {
     const ts = data?.atualizado_em ?? data?.atualizadoEm;
     if (els.promptAtualizadoEm) els.promptAtualizadoEm.textContent = formatAtualizadoEm(ts);
     setStatus('Prompt carregado.', 'ok');
+    return true;
   } catch (e) {
     console.error(e);
     setStatus('Erro ao carregar prompt.', 'error');
+    return false;
   }
 }
 
@@ -398,6 +400,48 @@ async function criarAgente(payload) {
     console.error(e);
     setStatus('Erro ao criar agente.', 'error');
   }
+}
+
+async function abrirAgenteCriado(resp, payload) {
+  const fluxo = String(resp?.fluxo ?? payload?.nome_base ?? '').trim();
+  const agente = String(
+    resp?.nome_final ??
+    resp?.nome ??
+    resp?.agente ??
+    payload?.nome_final ??
+    ''
+  ).trim();
+  const versao = Number(resp?.versao ?? payload?.versao ?? 1) || 1;
+  const ativo = typeof resp?.ativo === 'boolean' ? resp.ativo : !!payload?.ativo;
+  const promptInicial = String(
+    resp?.prompt ??
+    resp?.conteudo ??
+    resp?.prompt_inicial ??
+    payload?.prompt_inicial ??
+    ''
+  );
+
+  if (els.inputFluxo) els.inputFluxo.value = fluxo;
+  if (els.inputAgente) els.inputAgente.value = agente;
+  if (els.inputVersao) els.inputVersao.value = String(versao);
+  if (els.chkAtivo) els.chkAtivo.checked = ativo;
+  updateAtivoIndicator(ativo);
+
+  localStorage.setItem('cacto:fluxo', fluxo);
+  localStorage.setItem('cacto:agente', agente);
+  localStorage.setItem('cacto:versao', String(versao));
+
+  let carregouDoBackend = false;
+  if (agente) {
+    carregouDoBackend = await carregarPrompt();
+  }
+
+  if (!carregouDoBackend && els.prompt) {
+    els.prompt.value = promptInicial;
+    updateLineCount();
+  }
+
+  setStatus(carregouDoBackend ? 'Agente criado e carregado.' : 'Agente criado e selecionado.', 'ok');
 }
 
 function renderAgenteResultados(list) {
@@ -600,8 +644,7 @@ els.btnCriarAgenteConfirm?.addEventListener('click', async () => {
   const payload = { nome_base: base, versao: Number(versao), nome_final: nomeFinal, descricao, prompt_inicial: promptInicial, ativo };
   const resp = await criarAgente(payload);
   if (resp) {
-    if (els.inputAgente) els.inputAgente.value = nomeFinal;
-    localStorage.setItem('cacto:agente', nomeFinal);
+    await abrirAgenteCriado(resp, payload);
     openModal(els.modalCriarAgente, false);
   }
 });
